@@ -199,6 +199,7 @@ document.addEventListener('click', () => {
 
 
 
+
 const isRu = document.documentElement.lang === 'ru';
 const copyLabel = isRu ? 'Копировать' : 'Copy';
 const copiedLabel = isRu ? '✓ Скопировано' : '✓ Copied';
@@ -222,24 +223,40 @@ shareMenu.innerHTML = `
 `;
 document.body.appendChild(shareMenu);
 
+shareMenu.addEventListener('mousedown', (e) => e.stopPropagation());
+shareMenu.addEventListener('touchstart', (e) => e.stopPropagation());
+shareMenu.addEventListener('touchend', (e) => e.stopPropagation());
+
 let selectedQuote = '';
 
 function handleTextSelection() {
     const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+        shareMenu.style.display = 'none';
+        return;
+    }
     const text = selection.toString().trim();
-
-    if (text.length > 4) {
+    if (text.length >= 2) {
         const range = selection.getRangeAt(0);
         const rect = range.getBoundingClientRect();
+
+        if (rect.width === 0 && rect.height === 0) {
+            shareMenu.style.display = 'none';
+            return;
+        }
+
         const targetEl = range.commonAncestorContainer.nodeType === 1 
             ? range.commonAncestorContainer 
             : range.commonAncestorContainer.parentElement;
+
         if (targetEl && targetEl.closest('.container, header')) {
             selectedQuote = text;
+
             let leftPos = rect.left + rect.width / 2;
             const halfMenuWidth = 110; 
             leftPos = Math.max(halfMenuWidth + 12, Math.min(window.innerWidth - halfMenuWidth - 12, leftPos));
             shareMenu.style.left = `${leftPos}px`;
+
             if (window.innerWidth <= 768) {
                 shareMenu.classList.add('below');
                 shareMenu.style.top = `${rect.bottom + window.scrollY + 12}px`;
@@ -255,10 +272,16 @@ function handleTextSelection() {
 
     shareMenu.style.display = 'none';
 }
-document.addEventListener('mouseup', () => setTimeout(handleTextSelection, 10));
-document.addEventListener('touchend', () => setTimeout(handleTextSelection, 120));
+
+document.addEventListener('mouseup', () => setTimeout(handleTextSelection, 20));
+document.addEventListener('touchend', () => setTimeout(handleTextSelection, 150));
 
 document.addEventListener('mousedown', (e) => {
+    if (!shareMenu.contains(e.target)) {
+        shareMenu.style.display = 'none';
+    }
+});
+document.addEventListener('touchstart', (e) => {
     if (!shareMenu.contains(e.target)) {
         shareMenu.style.display = 'none';
     }
