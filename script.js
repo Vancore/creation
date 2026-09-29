@@ -236,8 +236,14 @@ function handleTextSelection() {
             : range.commonAncestorContainer.parentElement;
         if (targetEl && targetEl.closest('.container, header')) {
             selectedQuote = text;
-            shareMenu.style.top = `${rect.top + window.scrollY - 12}px`;
-            shareMenu.style.left = `${rect.left + rect.width / 2}px`;
+            if (window.innerWidth <= 768) {
+                shareMenu.classList.add('mobile-dock');
+            } else {
+                shareMenu.classList.remove('mobile-dock');
+                shareMenu.style.top = `${rect.top + window.scrollY - 12}px`;
+                shareMenu.style.left = `${rect.left + rect.width / 2}px`;
+            }
+
             shareMenu.style.display = 'flex';
             return;
         }
@@ -245,9 +251,8 @@ function handleTextSelection() {
 
     shareMenu.style.display = 'none';
 }
-
 document.addEventListener('mouseup', () => setTimeout(handleTextSelection, 10));
-document.addEventListener('touchend', () => setTimeout(handleTextSelection, 10));
+document.addEventListener('touchend', () => setTimeout(handleTextSelection, 120));
 
 document.addEventListener('mousedown', (e) => {
     if (!shareMenu.contains(e.target)) {
