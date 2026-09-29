@@ -288,11 +288,6 @@ document.addEventListener('mousedown', (e) => {
         shareMenu.style.display = 'none';
     }
 });
-document.addEventListener('touchstart', (e) => {
-    if (!shareMenu.contains(e.target)) {
-        shareMenu.style.display = 'none';
-    }
-});
 
 document.getElementById('share-x-btn').addEventListener('click', () => {
     const quote = selectedQuote.length > 180 ? selectedQuote.slice(0, 177) + '...' : selectedQuote;
