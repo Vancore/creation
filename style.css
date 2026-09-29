@@ -566,8 +566,9 @@ header h1 {
     position: relative;
     color: #d5dbd2;
     cursor: help;
-    text-decoration: underline dotted #ffae73 1.5px;
+    text-decoration: underline solid #ffae73 1px;
     text-underline-offset: 3px;
+    text-decoration-skip-ink: none;
     transition: color 0.2s ease;
 }
 
