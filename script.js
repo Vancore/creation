@@ -236,12 +236,16 @@ function handleTextSelection() {
             : range.commonAncestorContainer.parentElement;
         if (targetEl && targetEl.closest('.container, header')) {
             selectedQuote = text;
+            let leftPos = rect.left + rect.width / 2;
+            const halfMenuWidth = 110; 
+            leftPos = Math.max(halfMenuWidth + 12, Math.min(window.innerWidth - halfMenuWidth - 12, leftPos));
+            shareMenu.style.left = `${leftPos}px`;
             if (window.innerWidth <= 768) {
-                shareMenu.classList.add('mobile-dock');
+                shareMenu.classList.add('below');
+                shareMenu.style.top = `${rect.bottom + window.scrollY + 12}px`;
             } else {
-                shareMenu.classList.remove('mobile-dock');
+                shareMenu.classList.remove('below');
                 shareMenu.style.top = `${rect.top + window.scrollY - 12}px`;
-                shareMenu.style.left = `${rect.left + rect.width / 2}px`;
             }
 
             shareMenu.style.display = 'flex';
