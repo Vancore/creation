@@ -228,8 +228,18 @@ shareMenu.addEventListener('touchstart', (e) => e.stopPropagation());
 shareMenu.addEventListener('touchend', (e) => e.stopPropagation());
 
 let selectedQuote = '';
+let isScrolling = false;
+let scrollTimeout = null;
+window.addEventListener('scroll', () => {
+    isScrolling = true;
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+    }, 200);
+}, { passive: true });
 
 function handleTextSelection() {
+    if (isScrolling) return;
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) {
         shareMenu.style.display = 'none';
@@ -240,17 +250,14 @@ function handleTextSelection() {
 
     if (text.length >= 2) {
         const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-
+        let rect = range.getBoundingClientRect();
         if (rect.width === 0 && rect.height === 0) {
-            shareMenu.style.display = 'none';
             return;
         }
 
         const targetEl = range.commonAncestorContainer.nodeType === 1 
             ? range.commonAncestorContainer 
             : range.commonAncestorContainer.parentElement;
-
         if (targetEl && targetEl.closest('.container, header')) {
             selectedQuote = text;
 
@@ -266,12 +273,12 @@ function handleTextSelection() {
                 shareMenu.classList.remove('below');
                 shareMenu.style.top = `${rect.top + window.scrollY - 12}px`;
             }
-
             shareMenu.style.display = 'flex';
             return;
         }
     }
 
+    // Скрываем меню ТОЛЬКО если человек реально снял выделение
     shareMenu.style.display = 'none';
 }
 
