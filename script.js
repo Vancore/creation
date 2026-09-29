@@ -235,7 +235,9 @@ function handleTextSelection() {
         shareMenu.style.display = 'none';
         return;
     }
+
     const text = selection.toString().trim();
+
     if (text.length >= 2) {
         const range = selection.getRangeAt(0);
         const rect = range.getBoundingClientRect();
@@ -273,8 +275,13 @@ function handleTextSelection() {
     shareMenu.style.display = 'none';
 }
 
+let selectionTimer = null;
+document.addEventListener('selectionchange', () => {
+    clearTimeout(selectionTimer);
+    selectionTimer = setTimeout(handleTextSelection, 200);
+});
+
 document.addEventListener('mouseup', () => setTimeout(handleTextSelection, 20));
-document.addEventListener('touchend', () => setTimeout(handleTextSelection, 150));
 
 document.addEventListener('mousedown', (e) => {
     if (!shareMenu.contains(e.target)) {
